@@ -1,5 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+import 'package:oauth2/oauth2.dart' as oauth2;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter_home_connect_sdk/flutter_home_connect_sdk.dart';
+
+import './components/login.dart' show showLogin;
+import './auth/oauth.dart' show HomeConnectOauth;
+
+const oauthUri = 'https://simulator.home-connect.com/security/oauth/authorize';
+const oauthTokenUri = 'https://simulator.home-connect.com/security/oauth/token';
+const clientId = '03943A3AF9137E54871439D690ADC05907F480DEC22E9385C0852C1BD1A6533C';
+const clientSecret = '';
+const redirectUrl = "https://api-docs.home-connect.com/quickstart/";
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +44,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       defaultTransition: Transition.native,
-      getPages: [],
+      getPages: [
+        GetPage(name: '/', page: () => const MyHomePage(title: 'Flutter Demo Home Page')),
+      ],
     );
   }
 }
@@ -50,7 +69,50 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+class LoginView extends StatelessWidget {
+
+  late final WebViewController controller;
+
+
+  LoginView({super.key}) {
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authorizationEndpoint = Uri.parse(oauthUri);
+    //final redirectUrl = Uri.parse('http://localhost:3300');
+    final redirectUrl = Uri.parse('https://api-docs.home-connect.com/quickstart/');
+    final grant = oauth2.AuthorizationCodeGrant(
+      clientId, Uri.parse(oauthUri), Uri.parse(oauthTokenUri));
+    var authorizationUrl = grant.getAuthorizationUrl(redirectUrl);
+    //WebViewController? _controller;
+    controller = WebViewController()
+      ..loadRequest(
+        authorizationUrl
+      );
+
+    controller.setNavigationDelegate(NavigationDelegate(
+        onNavigationRequest: (navReq) {
+          print("requrl ${navReq.url.toString()}");
+        if (navReq.url.startsWith(redirectUrl.toString())) {
+          final responseUrl = Uri.parse(navReq.url);
+          print(responseUrl);
+          return NavigationDecision.prevent;
+        }
+        return NavigationDecision.navigate;
+        }
+    ),);
+    return WebViewWidget(
+      //initialUrl: authorizationUrl,
+      controller: controller,
+      //javascriptMode: JavascriptMode.unrestricted,
+    );
+  }
+}
+
 class _MyHomePageState extends State<MyHomePage> {
+  HttpServer? _redirectServer;
   int _counter = 0;
 
   void _incrementCounter() {
@@ -64,8 +126,77 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<Map<String, String>> _listen() async {
+    final HttpRequest request = await _redirectServer!.first;
+    final Map<String, String> params = request.uri.queryParameters;
+    request.response.statusCode = 200;
+    request.response.headers.set('Content-Type', 'text/plain');
+    request.response.writeln('Authenticated! You can close the window.');
+    await request.response.close();
+    await _redirectServer!.close();
+    _redirectServer = null;
+    return params;
+  }
+
+  void login() async {
+    await _redirectServer?.close();
+    // Bind to an ephemeral port on localhost
+    //_redirectServer = await HttpServer.bind('localhost', 3300);;
+    final authorizationEndpoint = Uri.parse('oauthUri');
+    final clientId = '03943A3AF9137E54871439D690ADC05907F480DEC22E9385C0852C1BD1A6533C';
+    //final clientId = '59E61AFB0770F46359C65D658AE7B0D12336DACF7E609D70FD90392F19B19F7C';
+
+    final grant = oauth2.AuthorizationCodeGrant(
+      clientId, Uri.parse(oauthUri), Uri.parse(oauthTokenUri));
+    final redirectUrl = Uri.parse('http://localhost:3300');
+    var authorizationUrl = grant.getAuthorizationUrl(redirectUrl);
+ 
+    if (await canLaunch(authorizationUrl.toString())) {
+      await launch(authorizationUrl.toString());
+    }
+    final Map<String, String> responseQueryParameter = await _listen();
+    print("done: $responseQueryParameter");
+    setState(() {
+      _counter++;
+    });
+    closeWebView();
+
+    void handleAuthResponse(Uri responseUrl) async {
+      final res = await grant.handleAuthorizationResponse(responseUrl.queryParameters);
+      print(res);
+      print(res.credentials.accessToken);
+    }
+
+    Uri responseUrl = Uri.parse('');
+    getLinksStream().listen((String? uri) {
+      print("got url $uri");
+      if (uri != null && uri.toString().startsWith(redirectUrl.toString())) {
+        responseUrl = Uri.parse(uri);
+        print(responseUrl);
+        closeWebView();
+        handleAuthResponse(responseUrl);
+      }
+    });
+    //},);
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_counter == 0) {
+      //return LoginView();
+    }
+    final hcoauth = HomeConnectOauth(context: context);
+    final homeconnectApi = HomeConnectApi(
+      "",
+      accessToken: "",
+      credentials: HomeConnectClientCredentials(
+        clientId: clientId,
+        redirectUri: redirectUrl,
+      ),
+      authenticator: hcoauth,
+      // TODO support caching tokens
+      //storage: FlutterSecureStorage(),
+    );
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -104,6 +235,17 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
+            ),
+            TextButton(
+              onPressed: () async {
+                final creds = HomeConnectClientCredentials(
+                  clientId: clientId,
+                  clientSecret: clientSecret,
+                  redirectUri: redirectUrl,
+                );
+                await homeconnectApi.authenticate();
+              },
+              child: Text("Login with HomeConnect"),
             ),
           ],
         ),
