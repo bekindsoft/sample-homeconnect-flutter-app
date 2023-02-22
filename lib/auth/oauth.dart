@@ -13,7 +13,8 @@ class HomeConnectOauth extends HomeConnectAuth {
   });
 
   @override
-  Future<HomeConnectAuthCredentials> authorize(HomeConnectClientCredentials credentials) async {
+  Future<HomeConnectAuthCredentials> authorize(
+      HomeConnectClientCredentials credentials) async {
     print("received credentials $credentials");
     final response = await showLogin(
       context: context,
@@ -34,17 +35,22 @@ class HomeConnectOauth extends HomeConnectAuth {
       },
     );
     final res = jsonDecode(utf8.decode(tokenResponse.bodyBytes)) as Map;
-    print("body ${res}");
-    //final accessToken = tokenResponse.body['accessToken'];
+    // final accessToken = tokenResponse.body['accessToken'];
     return HomeConnectAuthCredentials(
-      accessToken: res['accessToken'],
-      refreshToken: res['refreshToken'],
+      accessToken: res['access_token'],
+      refreshToken: res['access_token'],
       //expirationDate: DateTime.now().add(const Duration(days: 1)),
     );
   }
 
+  @override
+  Future<HomeConnectAuthCredentials> refresh(String refreshToken) {
+    // TODO: implement refresh
+    throw UnimplementedError();
+  }
+
   //@override
   //String getAuthUrl() {
-    //return 'https://simulator.home-connect.com/security/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code&scope=IdentifyAppliance+Monitor+ControlCooking+ControlLaundry&state=123456789';
+  //return 'https://simulator.home-connect.com/security/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code&scope=IdentifyAppliance+Monitor+ControlCooking+ControlLaundry&state=123456789';
   //}
 }
