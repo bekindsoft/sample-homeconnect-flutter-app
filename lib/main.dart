@@ -9,25 +9,23 @@ import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter_home_connect_sdk/flutter_home_connect_sdk.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import './auth/oauth.dart' show HomeConnectOauth;
 
 const oauthUri = 'https://simulator.home-connect.com/security/oauth/authorize';
 const oauthTokenUri = 'https://simulator.home-connect.com/security/oauth/token';
-// const tClientId =
-//     '03943A3AF9137E54871439D690ADC05907F480DEC22E9385C0852C1BD1A6533C';
-const tClientId =
-    "5741E5A0CBB9CCE4CDE5AA6BFDBDB5E64A34325A329E091F6869754168605EE4";
-const clientSecret = '';
-const redirectUrl = "https://api-docs.home-connect.com/quickstart/";
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
+
+  final env = dotenv.env;
+
   final api =
-      HomeConnectApi("https://simulator.home-connect.com/api/homeappliances",
-          // accessToken: "",
+      HomeConnectApi(env["HOMECONNECT_URL"]!,
           credentials: HomeConnectClientCredentials(
-            clientId: tClientId,
-            redirectUri: redirectUrl,
+            clientId: env["HOMECONNECT_CLIENT_ID"]!,
+            redirectUri: env["HOMECONNECT_REDIRECT_URL"]!, // redirectUrl,
           ),
           authenticator: null
           // TODO support caching tokens
@@ -72,41 +70,6 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class LoginView extends StatelessWidget {
-  late final WebViewController controller;
-
-  // ignore: prefer_const_constructors_in_immutables
-  LoginView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final authorizationEndpoint = Uri.parse(oauthUri);
-    //final redirectUrl = Uri.parse('http://localhost:3300');
-    final redirectUrl =
-        Uri.parse('https://api-docs.home-connect.com/quickstart/');
-    final grant = oauth2.AuthorizationCodeGrant(
-        tClientId, Uri.parse(oauthUri), Uri.parse(oauthTokenUri));
-    var authorizationUrl = grant.getAuthorizationUrl(redirectUrl);
-    //WebViewController? _controller;
-    controller = WebViewController()..loadRequest(authorizationUrl);
-
-    controller.setNavigationDelegate(
-      NavigationDelegate(onNavigationRequest: (navReq) {
-        if (navReq.url.startsWith(redirectUrl.toString())) {
-          final responseUrl = Uri.parse(navReq.url);
-          return NavigationDecision.prevent;
-        }
-        return NavigationDecision.navigate;
-      }),
-    );
-    return WebViewWidget(
-      //initialUrl: authorizationUrl,
-      controller: controller,
-      //javascriptMode: JavascriptMode.unrestricted,
-    );
-  }
-}
-
 class _MyHomePageState extends State<MyHomePage> {
   HttpServer? _redirectServer;
 
@@ -120,40 +83,6 @@ class _MyHomePageState extends State<MyHomePage> {
     await _redirectServer!.close();
     _redirectServer = null;
     return params;
-  }
-
-  void login() async {
-    await _redirectServer?.close();
-    // Bind to an ephemeral port on localhost
-    //_redirectServer = await HttpServer.bind('localhost', 3300);;
-    final authorizationEndpoint = Uri.parse('oauthUri');
-
-    final grant = oauth2.AuthorizationCodeGrant(
-        tClientId, Uri.parse(oauthUri), Uri.parse(oauthTokenUri));
-    final redirectUrl = Uri.parse('http://localhost:3300');
-    var authorizationUrl = grant.getAuthorizationUrl(redirectUrl);
-
-    if (await canLaunch(authorizationUrl.toString())) {
-      await launch(authorizationUrl.toString());
-    }
-    final Map<String, String> responseQueryParameter = await _listen();
-    setState(() {});
-    closeWebView();
-
-    void handleAuthResponse(Uri responseUrl) async {
-      final res =
-          await grant.handleAuthorizationResponse(responseUrl.queryParameters);
-    }
-
-    Uri responseUrl = Uri.parse('');
-    getLinksStream().listen((String? uri) {
-      if (uri != null && uri.toString().startsWith(redirectUrl.toString())) {
-        responseUrl = Uri.parse(uri);
-        closeWebView();
-        handleAuthResponse(responseUrl);
-      }
-    });
-    //},);
   }
 
   @override
@@ -175,11 +104,6 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             TextButton(
               onPressed: () async {
-                final creds = HomeConnectClientCredentials(
-                  clientId: tClientId,
-                  clientSecret: clientSecret,
-                  redirectUri: redirectUrl,
-                );
                 await homeconnectApi.authenticate();
               },
               child: const Text("Login with HomeConnecttt"),
