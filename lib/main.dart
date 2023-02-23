@@ -3,11 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sample_homeconnect_flutter/page/device_list.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
-import 'package:oauth2/oauth2.dart' as oauth2;
-import 'package:url_launcher/url_launcher.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:flutter_home_connect_sdk/flutter_home_connect_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -21,16 +17,15 @@ Future<void> main() async {
 
   final env = dotenv.env;
 
-  final api =
-      HomeConnectApi(env["HOMECONNECT_URL"]!,
-          credentials: HomeConnectClientCredentials(
-            clientId: env["HOMECONNECT_CLIENT_ID"]!,
-            redirectUri: env["HOMECONNECT_REDIRECT_URL"]!, // redirectUrl,
-          ),
-          authenticator: null
-          // TODO support caching tokens
-          //storage: FlutterSecureStorage(),
-          );
+  final api = HomeConnectApi(env["HOMECONNECT_URL"]!,
+      credentials: HomeConnectClientCredentials(
+        clientId: env["HOMECONNECT_CLIENT_ID"]!,
+        redirectUri: env["HOMECONNECT_REDIRECT_URL"]!, // redirectUrl,
+      ),
+      authenticator: null
+      // TODO support caching tokens
+      //storage: FlutterSecureStorage(),
+      );
   // accessToken: "",
   runApp(MyApp(api: api));
 }
@@ -51,9 +46,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       defaultTransition: Transition.native,
       getPages: [
-        GetPage(
-            name: '/',
-            page: () => MyHomePage(title: 'Flutter Demo Home Page', api: api)),
+        GetPage(name: '/', page: () => MyHomePage(title: 'Flutter Demo Home Page', api: api)),
       ],
     );
   }
@@ -89,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final hcoauth = HomeConnectOauth(context: context);
     final homeconnectApi = widget.api;
-    homeconnectApi.setAuthenticator(hcoauth);
+    homeconnectApi.authenticator = hcoauth;
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by

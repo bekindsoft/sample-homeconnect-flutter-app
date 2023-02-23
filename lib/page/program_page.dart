@@ -88,15 +88,14 @@ class OptionsWidget extends StatefulWidget {
 }
 
 class _OptionsWidgetState extends State<OptionsWidget> {
-  double? _currentSliderValue = 30;
+  double? _currentSliderValue;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Text(widget.option.key),
         Slider(
-          value: _currentSliderValue ??=
-              widget.option.constraints!.min.toDouble(),
+          value: _currentSliderValue ??= widget.option.value.toDouble(),
           min: widget.option.constraints!.min.toDouble(),
           max: widget.option.constraints!.max.toDouble(),
           divisions: (widget.option.constraints!.max.toInt() -

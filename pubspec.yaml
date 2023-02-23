@@ -43,6 +43,7 @@ dependencies:
   webview_flutter: ^4.0.2
   flutter_home_connect_sdk:
     path: ../../github/flutter_home_connect_sdk
+    # path: ../flutter_home_connect_sdk
   dotenv: ^4.1.0
   flutter_dotenv: ^5.0.2
 
