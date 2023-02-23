@@ -1,4 +1,4 @@
-name: sample-homeconnect-flutter
+name: sample_homeconnect_flutter
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -37,6 +37,15 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   get: ^4.6.5
+  oauth2: ^2.0.1
+  url_launcher: ^6.1.9
+  uni_links: ^0.5.1
+  webview_flutter: ^4.0.2
+  flutter_home_connect_sdk:
+    path: ../../github/flutter_home_connect_sdk
+    # path: ../flutter_home_connect_sdk
+  dotenv: ^4.1.0
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -61,7 +70,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - .env
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
