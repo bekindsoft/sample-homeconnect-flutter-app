@@ -17,7 +17,7 @@ Future<void> main() async {
 
   final env = dotenv.env;
 
-  final api = HomeConnectApi(env["HOMECONNECT_URL"]!,
+  final api = HomeConnectApi(Uri.parse(env["HOMECONNECT_URL"]!),
       credentials: HomeConnectClientCredentials(
         clientId: env["HOMECONNECT_CLIENT_ID"]!,
         redirectUri: env["HOMECONNECT_REDIRECT_URL"]!, // redirectUrl,
