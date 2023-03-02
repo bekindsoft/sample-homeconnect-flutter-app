@@ -42,9 +42,9 @@ dependencies:
   uni_links: ^0.5.1
   webview_flutter: ^4.0.2
   homeconnect:
-    path: ../../github/flutter_home_connect_sdk/homeconnect
+    path: ../flutter_home_connect_sdk/homeconnect
   homeconnect_flutter:
-    path: ../../github/flutter_home_connect_sdk/homeconnect_flutter
+    path: ../flutter_home_connect_sdk/homeconnect_flutter
   dotenv: ^4.1.0
   flutter_dotenv: ^5.0.2
 

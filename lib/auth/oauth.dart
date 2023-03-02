@@ -1,8 +1,5 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter_home_connect_sdk/flutter_home_connect_sdk.dart';
+import 'package:homeconnect/oauth/auth.dart';
 import '../components/login.dart' show showLogin;
 
 class HomeConnectOauth extends HomeConnectAuth {
@@ -13,8 +10,7 @@ class HomeConnectOauth extends HomeConnectAuth {
   });
 
   @override
-  Future<HomeConnectAuthCredentials> authorize(
-    String baseUrl, HomeConnectClientCredentials credentials) async {
+  Future<HomeConnectAuthCredentials> authorize(Uri baseUrl, HomeConnectClientCredentials credentials) async {
     final authorizationUrl = getCodeGrant(baseUrl, credentials);
     final response = await showLogin(
       context: context,
@@ -31,7 +27,7 @@ class HomeConnectOauth extends HomeConnectAuth {
   }
 
   @override
-  Future<HomeConnectAuthCredentials> refresh(String baseUrl, String refreshToken) {
+  Future<HomeConnectAuthCredentials> refresh(Uri baseUrl, String refreshToken) {
     // TODO: implement refresh
     throw UnimplementedError();
   }

@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:homeconnect/oauth/auth.dart';
 import 'package:sample_homeconnect_flutter/page/device_list.dart';
 
-import 'package:oauth2/oauth2.dart' as oauth2;
-import 'package:url_launcher/url_launcher.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:homeconnect/homeconnect.dart';
 import 'package:homeconnect_flutter/homeconnect_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -17,16 +13,15 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
 
   final env = dotenv.env;
-  final api =
-      HomeConnectApi(Uri.parse(env["HOMECONNECT_URL"]!),
-          credentials: HomeConnectClientCredentials(
-            clientId: env["HOMECONNECT_CLIENT_ID"]!,
-            redirectUri: env["HOMECONNECT_REDIRECT_URL"]!, // redirectUrl,
-          ),
-          authenticator: null
-          // TODO support caching tokens
-          //storage: FlutterSecureStorage(),
-          );
+  final api = HomeConnectApi(Uri.parse(env["HOMECONNECT_URL"]!),
+      credentials: HomeConnectClientCredentials(
+        clientId: env["HOMECONNECT_CLIENT_ID"]!,
+        redirectUri: env["HOMECONNECT_REDIRECT_URL"]!, // redirectUrl,
+      ),
+      authenticator: null
+      // TODO support caching tokens
+      //storage: FlutterSecureStorage(),
+      );
   // accessToken: "",
   runApp(MyApp(api: api));
 }
@@ -65,7 +60,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,38 +68,36 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Builder(
-        builder: (context) {
-    final hcoauth = HomeConnectOauth(context: context);
-    final homeconnectApi = widget.api;
-    homeconnectApi.authenticator = hcoauth;
-          return Center(
-            // Center is a layout widget. It takes a single child and positions it
-            // in the middle of the parent.
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextButton(
-                  onPressed: () async {
-                    await homeconnectApi.authenticate();
+      body: Builder(builder: (context) {
+        final hcoauth = HomeConnectOauth(context: context);
+        final homeconnectApi = widget.api;
+        homeconnectApi.authenticator = hcoauth;
+        return Center(
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextButton(
+                onPressed: () async {
+                  await homeconnectApi.authenticate();
+                },
+                child: const Text("Login with HomeConnecttt"),
+              ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DeviceListWidget(
+                                  api: homeconnectApi,
+                                )));
                   },
-                  child: const Text("Login with HomeConnecttt"),
-                ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DeviceListWidget(
-                                    api: homeconnectApi,
-                                  )));
-                    },
-                    child: const Text("List devices")),
-              ],
-            ),
-          );
-        }
-      ),
+                  child: const Text("List devices")),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
