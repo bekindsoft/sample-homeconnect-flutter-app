@@ -15,9 +15,6 @@ class _ProgramPageWidgetState extends State<ProgramPageWidget> {
   Map<String, ProgramOptions> options = {};
   @override
   Widget build(BuildContext context) {
-    widget.api.eventEmitter.addListener((ev, ob) {
-      print("Something happeneeeed: $ev $ob");
-    });
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.program.key.split('.').last),
@@ -69,24 +66,24 @@ class _ProgramPageWidgetState extends State<ProgramPageWidget> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    widget.api.eventEmitter.addListener((ev, context) {
-      ScaffoldMessenger.of(this.context).showSnackBar(
-        SnackBar(
-          content: Text("Event occurred! ${ev.eventData}"),
-        ),
-      );
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   widget.api.eventEmitter.addListener((ev, context) {
+  //     ScaffoldMessenger.of(this.context).showSnackBar(
+  //       SnackBar(
+  //         content: Text("Wow something is going on!! ${ev.eventData}"),
+  //       ),
+  //     );
+  //   });
+  // }
 }
 
 class OptionsWidget extends StatefulWidget {
   final ProgramOptions option;
   final HomeDevice device;
   final Function onUpdate;
-  const OptionsWidget({super.key, required this.option, required this.device, required this.onUpdate});
+  const OptionsWidget({Key? key, required this.option, required this.device, required this.onUpdate}) : super(key: key);
 
   @override
   State<OptionsWidget> createState() => _OptionsWidgetState();

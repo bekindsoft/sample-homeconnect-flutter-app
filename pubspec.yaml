@@ -45,6 +45,9 @@ dependencies:
     path: ../flutter_home_connect_sdk/homeconnect
   homeconnect_flutter:
     path: ../flutter_home_connect_sdk/homeconnect_flutter
+  # homeconnect_flutter:
+    # path: ../../github/flutter_home_connect_sdk
+    # path: ../flutter_home_connect_sdk
   dotenv: ^4.1.0
   flutter_dotenv: ^5.0.2
 
