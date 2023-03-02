@@ -15,6 +15,9 @@ class _ProgramPageWidgetState extends State<ProgramPageWidget> {
   Map<String, ProgramOptions> options = {};
   @override
   Widget build(BuildContext context) {
+    widget.api.eventEmitter.addListener((ev, ob) {
+      print("Something happeneeeed: $ev $ob");
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.program.key.split('.').last),

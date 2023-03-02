@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:homeconnect/oauth/auth.dart';
 import 'package:sample_homeconnect_flutter/page/device_list.dart';
 
 import 'package:homeconnect/homeconnect.dart';
