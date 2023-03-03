@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:homeconnect/homeconnect.dart';
 import 'package:sample_homeconnect_flutter/page/device_list.dart';
 
-import 'package:flutter_home_connect_sdk/flutter_home_connect_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import './auth/oauth.dart' show HomeConnectOauth;

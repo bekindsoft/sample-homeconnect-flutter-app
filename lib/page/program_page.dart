@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_home_connect_sdk/flutter_home_connect_sdk.dart';
+import 'package:homeconnect/homeconnect.dart';
 
 class ProgramPageWidget extends StatefulWidget {
   final HomeConnectApi api;
@@ -68,17 +68,17 @@ class _ProgramPageWidgetState extends State<ProgramPageWidget> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    widget.api.eventEmitter.addListener((ev, context) {
-      ScaffoldMessenger.of(this.context).showSnackBar(
-        SnackBar(
-          content: Text("Event occurred! ${ev.eventData}"),
-        ),
-      );
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   widget.api.eventEmitter.addListener((ev, context) {
+  //     ScaffoldMessenger.of(this.context).showSnackBar(
+  //       SnackBar(
+  //         content: Text("Event occurred! ${ev.eventData}"),
+  //       ),
+  //     );
+  //   });
+  // }
 }
 
 class OptionsWidget extends StatefulWidget {
