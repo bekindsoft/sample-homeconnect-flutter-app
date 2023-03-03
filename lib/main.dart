@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:homeconnect/homeconnect.dart';
+import 'package:sample_homeconnect_flutter/auth/oauth.dart';
 import 'package:sample_homeconnect_flutter/page/device_list.dart';
-import 'package:homeconnect_flutter/homeconnect_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
