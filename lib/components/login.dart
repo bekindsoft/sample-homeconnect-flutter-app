@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:oauth2/oauth2.dart' as oauth2;
 
 const oauthUri = 'https://simulator.home-connect.com/security/oauth/authorize';
 const oauthTokenUri = 'https://simulator.home-connect.com/security/oauth/token';
@@ -62,7 +61,7 @@ Future<Map<String, dynamic>?> showLogin({
       return Center(
         child: SizedBox(
           width: MediaQuery.of(context).size.width - 10,
-          height: MediaQuery.of(context).size.height - 80,
+          height: MediaQuery.of(context).size.height - 10,
           child: LoginView(
             clientId: clientId,
             authorizationUrl: authorizationUrl,

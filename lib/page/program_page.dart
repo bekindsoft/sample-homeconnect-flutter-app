@@ -74,7 +74,7 @@ class _ProgramPageWidgetState extends State<ProgramPageWidget> {
   //   widget.api.eventEmitter.addListener((ev, context) {
   //     ScaffoldMessenger.of(this.context).showSnackBar(
   //       SnackBar(
-  //         content: Text("Event occurred! ${ev.eventData}"),
+  //         content: Text("Wow something is going on!! ${ev.eventData}"),
   //       ),
   //     );
   //   });
