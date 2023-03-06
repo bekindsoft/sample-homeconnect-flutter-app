@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:homeconnect/homeconnect.dart';
-import 'package:sample_homeconnect_flutter/auth/oauth.dart';
+import 'package:homeconnect_flutter/homeconnect_flutter.dart';
 import 'package:sample_homeconnect_flutter/page/device_list.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Builder(builder: (context) {
         final hcoauth = HomeConnectOauth(context: context);
         final homeconnectApi = widget.api;
-        homeconnectApi.authenticator = hcoauth;
+        homeconnectApi.authenticator = hcoauth as HomeConnectAuth?;
         return Center(
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.
