@@ -1,6 +1,6 @@
 name: sample_homeconnect_flutter
 description: A new Flutter project.
-
+publish_to: 'none'
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 
@@ -17,6 +17,9 @@ description: A new Flutter project.
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
+
+
+
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
@@ -42,9 +45,14 @@ dependencies:
   webview_flutter: ^4.0.2
   dotenv: ^4.1.0
   flutter_dotenv: ^5.0.2
+  homeconnect:
+    path: ../flutter_home_connect_sdk/homeconnect
+  homeconnect_flutter:
+    path: ../flutter_home_connect_sdk/homeconnect_flutter
 
-  homeconnect: ^0.0.1
-  homeconnect_flutter: ^0.0.1
+
+  # homeconnect
+  # homeconnect_flutter
 
 dev_dependencies:
   flutter_test:

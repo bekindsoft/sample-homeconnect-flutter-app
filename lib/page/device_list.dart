@@ -8,9 +8,7 @@ class DeviceListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var list = api.getDevices();
     var list = api.getDevices();
-    // print(list);
 
     return Scaffold(
       appBar: AppBar(
@@ -21,21 +19,29 @@ class DeviceListWidget extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<List<HomeDevice>> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
+              padding: const EdgeInsets.all(20),
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                    title: Text(snapshot.data![index].info.name),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.arrow_forward_ios),
-                      onPressed: () async {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return DevicePageWidget(
-                            api: api,
-                            device: snapshot.data![index],
-                          );
-                        }));
-                      },
-                    ));
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  elevation: 10,
+                  child: ListTile(
+                      title: Text(snapshot.data![index].info.name),
+                      subtitle: Text(snapshot.data![index].info.haId),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.arrow_forward_ios),
+                        onPressed: () async {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return DevicePageWidget(
+                              api: api,
+                              device: snapshot.data![index],
+                            );
+                          }));
+                        },
+                      )),
+                );
               },
             );
           } else {

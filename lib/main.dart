@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:homeconnect/homeconnect.dart';
 import 'package:homeconnect_flutter/homeconnect_flutter.dart';
+import 'package:sample_homeconnect_flutter/components/gradient_background.dart';
 import 'package:sample_homeconnect_flutter/page/device_list.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -30,14 +31,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'Home Connect Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.blue[900],
       ),
       initialRoute: '/',
       defaultTransition: Transition.native,
       getPages: [
-        GetPage(name: '/', page: () => MyHomePage(title: 'Flutter Demo Home Page', api: api)),
+        GetPage(name: '/', page: () => MyHomePage(title: 'Home Connect Demo', api: api)),
       ],
     );
   }
@@ -55,41 +57,69 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool authenticated = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[900],
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
+        centerTitle: true,
         title: Text(widget.title),
       ),
       body: Builder(builder: (context) {
         final hcoauth = HomeConnectOauth(context: context);
         final homeconnectApi = widget.api;
-        homeconnectApi.authenticator = hcoauth as HomeConnectAuth?;
+        homeconnectApi.authenticator = hcoauth;
         return Center(
-          // Center is a layout widget. It takes a single child and positions it
-          // in the middle of the parent.
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                onPressed: () async {
-                  await homeconnectApi.authenticate();
-                },
-                child: const Text("Login with HomeConnecttt"),
-              ),
-              TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DeviceListWidget(
-                                  api: homeconnectApi,
-                                )));
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                  onPressed: () async {
+                    try {
+                      await homeconnectApi.authenticate();
+                      Get.snackbar("Success", "Authenticated", backgroundColor: Colors.green[100]);
+                      setState(() {
+                        authenticated = true;
+                      });
+                    } catch (e) {
+                      print(e);
+                    }
                   },
-                  child: const Text("List devices")),
-            ],
+                  child: GradientBackground(text: authenticated ? "Authenticated" : "Login"),
+                ),
+                const SizedBox(height: 16.0),
+                authenticated
+                    ? ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DeviceListWidget(
+                                        api: homeconnectApi,
+                                      )));
+                        },
+                        child: const GradientBackground(text: "Show devices"),
+                      )
+                    : Container(),
+              ],
+            ),
           ),
         );
       }),
