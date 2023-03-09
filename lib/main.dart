@@ -38,7 +38,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       defaultTransition: Transition.native,
       getPages: [
-        GetPage(name: '/', page: () => MyHomePage(title: 'Flutter Demo Home Page', api: api)),
+        GetPage(
+            name: '/',
+            page: () => MyHomePage(title: 'Flutter Demo Home Page', api: api)),
       ],
     );
   }
@@ -67,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Builder(builder: (context) {
         final hcoauth = HomeConnectOauth(context: context);
         final homeconnectApi = widget.api;
-        homeconnectApi.authenticator = hcoauth as HomeConnectAuth?;
+        homeconnectApi.authenticator = hcoauth;
         return Center(
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.

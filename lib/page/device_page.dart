@@ -5,7 +5,8 @@ import 'package:sample_homeconnect_flutter/page/program_page.dart';
 class DevicePageWidget extends StatelessWidget {
   final HomeConnectApi api;
   final HomeDevice device;
-  const DevicePageWidget({Key? key, required this.api, required this.device}) : super(key: key);
+  const DevicePageWidget({Key? key, required this.api, required this.device})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,8 @@ class DevicePageWidget extends StatelessWidget {
           Expanded(
             child: FutureBuilder(
               future: device.init(),
-              builder: (BuildContext context, AsyncSnapshot<HomeDevice> snapshot) {
+              builder:
+                  (BuildContext context, AsyncSnapshot<HomeDevice> snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(
                     itemCount: snapshot.data!.programs.length,
@@ -53,17 +55,21 @@ class DevicePageWidget extends StatelessWidget {
                           trailing: IconButton(
                             icon: const Icon(Icons.arrow_forward_ios),
                             onPressed: () async {
-                              await device.selectProgram(
-                                programKey: snapshot.data!.programs[index].key,
-                              );
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ProgramPageWidget(
-                                            api: api,
-                                            device: device,
-                                            program: snapshot.data!.programs[index],
-                                          )));
+                              device
+                                  .selectProgram(
+                                    programKey:
+                                        snapshot.data!.programs[index].key,
+                                  )
+                                  .then((value) => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProgramPageWidget(
+                                          api: api,
+                                          device: device,
+                                          program:
+                                              snapshot.data!.programs[index],
+                                        ),
+                                      )));
                             },
                           ));
                     },
