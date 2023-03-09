@@ -51,13 +51,11 @@ Future<Map<String, dynamic>?> showLogin({
   required String redirectUrl,
   required String authorizationUrl,
 }) async {
-
   return showGeneralDialog<Map<String, dynamic>>(
     context: context,
     barrierDismissible: true,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-    pageBuilder: (BuildContext buildContext, Animation animation,
-        Animation secondaryAnimation) {
+    pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
       return Center(
         child: SizedBox(
           width: MediaQuery.of(context).size.width - 10,

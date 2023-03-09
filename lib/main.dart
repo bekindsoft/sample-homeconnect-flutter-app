@@ -10,13 +10,14 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final env = dotenv.env;
-  final api = HomeConnectApi(Uri.parse(env["HOMECONNECT_URL"]!),
-      credentials: HomeConnectClientCredentials(
-        clientId: env["HOMECONNECT_CLIENT_ID"]!,
-        redirectUri: env["HOMECONNECT_REDIRECT_URL"]!, // redirectUrl,
-      ),
-      authenticator: null,
-      storage: SharedPreferencesHomeConnectAuthStorage(prefs),
+  final api = HomeConnectApi(
+    Uri.parse(env["HOMECONNECT_URL"]!),
+    credentials: HomeConnectClientCredentials(
+      clientId: env["HOMECONNECT_CLIENT_ID"]!,
+      redirectUri: env["HOMECONNECT_REDIRECT_URL"]!, // redirectUrl,
+    ),
+    authenticator: null,
+    storage: SharedPreferencesHomeConnectAuthStorage(prefs),
   );
   runApp(MyApp(api: api));
 }

@@ -43,14 +43,9 @@ dependencies:
   dotenv: ^4.1.0
   flutter_dotenv: ^5.0.2
 
-<<<<<<< Updated upstream
-  homeconnect: ^0.0.1
-  homeconnect_flutter: ^0.0.1
-=======
   homeconnect: ^0.0.3
   homeconnect_flutter: ^0.0.3
   shared_preferences: ^2.0.18
->>>>>>> Stashed changes
 
 dev_dependencies:
   flutter_test:
