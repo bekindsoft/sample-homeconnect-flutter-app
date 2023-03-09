@@ -4,20 +4,20 @@ import 'package:homeconnect/homeconnect.dart';
 import 'package:homeconnect_flutter/homeconnect_flutter.dart';
 import 'package:sample_homeconnect_flutter/page/device_list.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   final env = dotenv.env;
   final api = HomeConnectApi(Uri.parse(env["HOMECONNECT_URL"]!),
       credentials: HomeConnectClientCredentials(
         clientId: env["HOMECONNECT_CLIENT_ID"]!,
         redirectUri: env["HOMECONNECT_REDIRECT_URL"]!, // redirectUrl,
       ),
-      authenticator: null
-      // TODO support caching tokens
-      //storage: FlutterSecureStorage(),
-      );
-  // accessToken: "",
+      authenticator: null,
+      storage: SharedPreferencesHomeConnectAuthStorage(prefs),
+  );
   runApp(MyApp(api: api));
 }
 
