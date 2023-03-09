@@ -18,8 +18,7 @@ class DeviceListWidget extends StatelessWidget {
       ),
       body: FutureBuilder(
         future: list,
-        builder:
-            (BuildContext context, AsyncSnapshot<List<HomeDevice>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<HomeDevice>> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -29,8 +28,7 @@ class DeviceListWidget extends StatelessWidget {
                     trailing: IconButton(
                       icon: const Icon(Icons.arrow_forward_ios),
                       onPressed: () async {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
                           return DevicePageWidget(
                             api: api,
                             device: snapshot.data![index],

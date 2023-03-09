@@ -53,17 +53,19 @@ class DevicePageWidget extends StatelessWidget {
                           trailing: IconButton(
                             icon: const Icon(Icons.arrow_forward_ios),
                             onPressed: () async {
-                              await device.selectProgram(
-                                programKey: snapshot.data!.programs[index].key,
-                              );
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ProgramPageWidget(
-                                            api: api,
-                                            device: device,
-                                            program: snapshot.data!.programs[index],
-                                          )));
+                              device
+                                  .selectProgram(
+                                    programKey: snapshot.data!.programs[index].key,
+                                  )
+                                  .then((value) => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProgramPageWidget(
+                                          api: api,
+                                          device: device,
+                                          program: snapshot.data!.programs[index],
+                                        ),
+                                      )));
                             },
                           ));
                     },
