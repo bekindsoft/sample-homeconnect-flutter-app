@@ -55,8 +55,7 @@ Future<Map<String, dynamic>?> showLogin({
     context: context,
     barrierDismissible: true,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-    pageBuilder: (BuildContext buildContext, Animation animation,
-        Animation secondaryAnimation) {
+    pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
       return Center(
         child: SizedBox(
           width: MediaQuery.of(context).size.width - 10,

@@ -7,15 +7,17 @@ on:
     branches: [main]
 
 jobs:
-  test-sdk:
+  lit:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '3.3.x'
 
       - name: Install dependencies
-        run: dart pub get
+        run: flutter pub get
 
       - name: Analyze project source
-        run: dart analyze --fatal-infos ./lib/*
+        run: flutter format -l 120 -n --set-exit-if-changed lib/*

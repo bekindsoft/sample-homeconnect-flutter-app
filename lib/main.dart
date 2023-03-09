@@ -38,9 +38,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       defaultTransition: Transition.native,
       getPages: [
-        GetPage(
-            name: '/',
-            page: () => MyHomePage(title: 'Flutter Demo Home Page', api: api)),
+        GetPage(name: '/', page: () => MyHomePage(title: 'Flutter Demo Home Page', api: api)),
       ],
     );
   }
