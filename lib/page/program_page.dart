@@ -33,10 +33,6 @@ class _ProgramPageWidgetState extends State<ProgramPageWidget> {
           },
         );
       }
-      // DeviceEvent.toEventList(ev).forEach((element) {
-      //   print(element.key);
-      //   print(element.value);
-      // });
       Get.snackbar("Status Change", DeviceEvent.toEventList(ev).first.value,
           backgroundColor: Colors.green[100], snackPosition: SnackPosition.BOTTOM, barBlur: 10);
     }
@@ -116,6 +112,9 @@ class _ProgramPageWidgetState extends State<ProgramPageWidget> {
   void dispose() {
     widget.device.stopListening();
     widget.device.removeListener(listener: widget.device.listeners.first);
+    widget.device.eventEmitter.removeAllByEvent('notify');
+    widget.device.eventEmitter.removeAllByEvent('status');
+    widget.device.listeners.clear();
     super.dispose();
   }
 }
@@ -132,6 +131,42 @@ class OptionsWidget extends StatefulWidget {
 
 class _OptionsWidgetState extends State<OptionsWidget> {
   double? currentSliderValue;
+
+  @override
+  void initState() {
+    super.initState();
+    tempChange(ev, cnt) {
+      if (DeviceEvent.toEventList(ev).first.key == "Cooking.Oven.Option.SetpointTemperature" &&
+          widget.option.key == "Cooking.Oven.Option.SetpointTemperature") {
+        setState(() {
+          try {
+            double v = DeviceEvent.toEventList(ev).first.value.toDouble();
+            currentSliderValue = v;
+          } catch (e) {
+            print(e);
+          }
+        });
+      }
+    }
+
+    durationChange(ev, cnt) {
+      if (DeviceEvent.toEventList(ev).first.key == "BSH.Common.Option.Duration" &&
+          widget.option.key == "BSH.Common.Option.Duration") {
+        setState(() {
+          try {
+            double v = DeviceEvent.toEventList(ev).first.value.toDouble();
+            currentSliderValue = v;
+          } catch (e) {
+            print(e);
+          }
+        });
+      }
+    }
+
+    widget.device.onNotify(callback: (ev, cnt) => tempChange(ev, cnt));
+    widget.device.onNotify(callback: (ev, cnt) => durationChange(ev, cnt));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
