@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sample_homeconnect_flutter/screens/welcome_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: const WelcomeScreen(),
+      // home: const WelcomeScreen(),
     );
   }
 }
