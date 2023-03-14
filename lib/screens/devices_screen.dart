@@ -54,7 +54,6 @@ class DevicesScreen extends ConsumerWidget {
                                 color: Colors.orange.shade300,
                                 child: ListTile(
                                   onTap: () {
-                                    print(device);
                                     ref.read(deviceProvider.notifier).setDevice(device);
                                   },
                                   trailing: const Icon(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homeconnect/homeconnect.dart';
-import 'package:sample_homeconnect_flutter/auth/oauth.dart';
+import 'package:homeconnect_flutter/homeconnect_flutter.dart';
 import 'package:sample_homeconnect_flutter/provider.dart';
 import 'package:sample_homeconnect_flutter/screens/devices_screen.dart';
 
@@ -41,19 +41,18 @@ class WelcomeScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: homeconnectApi.when(
                   data: (value) {
-                    HomeConnectApi api = value as HomeConnectApi;
+                    HomeConnectApi api = value;
                     api.authenticator = hcoAuth;
                     return ElevatedButton(
                       onPressed: () async {
                         try {
                           api.authenticate();
                           ref.read(authrizationStateProvider.notifier).state = true;
-                          autorized = true;
                         } catch (e) {
                           print(e);
                         }
                       },
-                      child: !autorized
+                      child: !ref.watch(authrizationStateProvider)
                           ? const Text(
                               'Login',
                               style: TextStyle(color: Colors.white),
