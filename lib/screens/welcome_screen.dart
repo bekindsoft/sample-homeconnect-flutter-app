@@ -10,10 +10,10 @@ class WelcomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final testProvider = ref.watch(apiProvider2);
     AsyncValue homeconnectApi = ref.watch(authProvider);
     bool autorized = ref.watch(authrizationStateProvider);
     final hcoAuth = HomeConnectOauth(context: context);
-    print(autorized);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

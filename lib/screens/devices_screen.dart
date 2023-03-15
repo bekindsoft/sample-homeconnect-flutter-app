@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_homeconnect_flutter/provider.dart';
+import 'package:sample_homeconnect_flutter/screens/dishes_screen.dart';
 
 class DevicesScreen extends ConsumerWidget {
   const DevicesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final device = ref.watch(deviceProvider);
+    final devices = ref.watch(apiProvider2.notifier).getApi().getDevices();
+    final apiState = ref.watch(apiProvider2);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -27,9 +29,9 @@ class DevicesScreen extends ConsumerWidget {
                 'Welcome!',
                 style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Colors.blueGrey),
               ),
-              device != null
+              apiState.device != null
                   ? Text(
-                      "You have selected: ${device.deviceName}",
+                      "You have selected: ${apiState.device!.deviceName}",
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
                     )
                   : const Text(
@@ -41,7 +43,7 @@ class DevicesScreen extends ConsumerWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blueGrey),
               ),
               FutureBuilder(
-                future: ref.read(devicesProvider.future),
+                future: devices,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView(
@@ -54,7 +56,14 @@ class DevicesScreen extends ConsumerWidget {
                                 color: Colors.orange.shade300,
                                 child: ListTile(
                                   onTap: () {
-                                    ref.read(deviceProvider.notifier).setDevice(device);
+                                    // ref.read(deviceProvider.notifier).setDevice(device);
+                                    ref.read(apiProvider2.notifier).setDevice(device);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const DishesScreen(),
+                                      ),
+                                    );
                                   },
                                   trailing: const Icon(
                                     Icons.arrow_forward_ios,
