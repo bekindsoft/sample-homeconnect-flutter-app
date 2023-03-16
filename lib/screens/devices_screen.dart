@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homeconnect/homeconnect.dart';
 import 'package:sample_homeconnect_flutter/provider.dart';
 import 'package:sample_homeconnect_flutter/screens/dishes_screen.dart';
 
@@ -55,9 +56,9 @@ class DevicesScreen extends ConsumerWidget {
                                 elevation: 10,
                                 color: Colors.orange.shade300,
                                 child: ListTile(
-                                  onTap: () {
-                                    // ref.read(deviceProvider.notifier).setDevice(device);
-                                    ref.read(apiProvider2.notifier).setDevice(device);
+                                  onTap: () async {
+                                    HomeDevice selected = await device.init();
+                                    ref.read(apiProvider2.notifier).setDevice(selected);
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(

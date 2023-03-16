@@ -108,6 +108,11 @@ final authrizationStateProvider = StateProvider<bool>((ref) {
   return false;
 });
 
+final authentiacationStateProvider = StateProvider<bool>((ref) {
+  final api = ref.watch(apiProvider2);
+  return api.authenticated;
+});
+
 /// authProvider is an async provider that exposes a HomeConnectApi instance ready to use `authenticate()`
 ///
 /// ## Example
@@ -189,7 +194,7 @@ class ApiNotifier2 extends StateNotifier<ApiState> {
     state = state.copyWith(api: authapi);
   }
 
-  void setAuthorized(bool authorized) {
+  void setAuthenticated(bool authorized) {
     state = state.copyWith(authorized: authorized);
   }
 
@@ -197,12 +202,12 @@ class ApiNotifier2 extends StateNotifier<ApiState> {
     return state.api!;
   }
 
-  bool getAuthorized() {
-    return state.authorized;
+  bool getAuthenticated() {
+    return state.authenticated;
   }
 
-  void setDevice(HomeDevice device) {
-    state = state.copyWith(device: device);
+  void setDevice(HomeDevice dev) {
+    state = state.copyWith(device: dev);
   }
 
   HomeDevice getDevice() {
@@ -220,11 +225,11 @@ class ApiNotifier2 extends StateNotifier<ApiState> {
 
 class ApiState {
   final HomeConnectApi? api;
-  final bool authorized;
+  final bool authenticated;
   final List<HomeDevice> devices = [];
   final HomeDevice? device;
 
-  ApiState(this.api, this.authorized, this.device);
+  ApiState(this.api, this.authenticated, this.device);
 
   ApiState copyWith({
     HomeConnectApi? api,
@@ -232,6 +237,6 @@ class ApiState {
     List<HomeDevice>? devices,
     HomeDevice? device,
   }) {
-    return ApiState(api ?? this.api, authorized ?? this.authorized, device ?? this.device);
+    return ApiState(api ?? this.api, authorized ?? authenticated, device ?? this.device);
   }
 }

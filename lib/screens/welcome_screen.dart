@@ -11,9 +11,34 @@ class WelcomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final testProvider = ref.watch(apiProvider2);
-    AsyncValue homeconnectApi = ref.watch(authProvider);
-    bool autorized = ref.watch(authrizationStateProvider);
-    final hcoAuth = HomeConnectOauth(context: context);
+    final homeconnectApi = ref.watch(authProvider);
+    final hcoAuth = HomeConnectOauth(
+      context: context,
+      scopes: [OauthScope.identifyAppliance, OauthScope.oven, OauthScope.ovenControl, OauthScope.ovenSettings],
+    );
+    final authenticated = ref.watch(authentiacationStateProvider);
+
+    Future<void> login(HomeConnectApi api) async {
+      api.authenticator = hcoAuth;
+      try {
+        await api.authenticate();
+        final auth = await api.isAuthenticated();
+        ref.read(apiProvider2.notifier).setAuthenticated(auth);
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    Future<void> logout() async {
+      try {
+        await testProvider.api!.logout();
+        final auth = await testProvider.api!.isAuthenticated();
+        ref.read(apiProvider2.notifier).setAuthenticated(auth);
+      } catch (e) {
+        print(e);
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -25,7 +50,7 @@ class WelcomeScreen extends ConsumerWidget {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -34,25 +59,22 @@ class WelcomeScreen extends ConsumerWidget {
                 style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Colors.blueGrey),
               ),
               const Text(
-                'Let\'s cook something!',
+                "Let's cook something!",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blueGrey),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8),
                 child: homeconnectApi.when(
                   data: (value) {
-                    HomeConnectApi api = value;
-                    api.authenticator = hcoAuth;
                     return ElevatedButton(
                       onPressed: () async {
-                        try {
-                          api.authenticate();
-                          ref.read(authrizationStateProvider.notifier).state = true;
-                        } catch (e) {
-                          print(e);
+                        if (!testProvider.authenticated) {
+                          await login(value);
+                        } else {
+                          await logout();
                         }
                       },
-                      child: !ref.watch(authrizationStateProvider)
+                      child: !testProvider.authenticated
                           ? const Text(
                               'Login',
                               style: TextStyle(color: Colors.white),
@@ -64,19 +86,24 @@ class WelcomeScreen extends ConsumerWidget {
                     );
                   },
                   loading: () => const CircularProgressIndicator(),
-                  error: (e, s) => Text("Error: $e"),
+                  error: (e, s) => Text('Error: $e'),
                 ),
               ),
-              !autorized
-                  ? const Text('Log in to check your devices')
-                  : ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const DevicesScreen()),
-                        );
-                      },
-                      child: const Text('Check devices')),
+              if (!authenticated)
+                const Text('Log in to check your devices')
+              else
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const DevicesScreen()),
+                    );
+                  },
+                  child: const Text(
+                    'Check devices',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
             ],
           ),
         ),

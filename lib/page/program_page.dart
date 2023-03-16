@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:homeconnect/homeconnect.dart';
 
 class ProgramPageWidget extends StatefulWidget {
+  const ProgramPageWidget({required this.api, required this.device, required this.program, super.key});
   final HomeConnectApi api;
   final HomeDevice device;
   final DeviceProgram program;
-  const ProgramPageWidget({super.key, required this.api, required this.device, required this.program});
 
   @override
   State<ProgramPageWidget> createState() => _ProgramPageWidgetState();
@@ -22,7 +22,6 @@ class _ProgramPageWidgetState extends State<ProgramPageWidget> {
         title: Text(widget.program.key.split('.').last),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
@@ -34,7 +33,7 @@ class _ProgramPageWidgetState extends State<ProgramPageWidget> {
                 IconButton(
                   icon: const Icon(Icons.power_settings_new),
                   onPressed: () async {
-                    widget.device.startProgram(options: options.values.toList());
+                    await widget.device.startProgram(options: options.values.toList());
                   },
                 ),
                 IconButton(
@@ -47,45 +46,35 @@ class _ProgramPageWidgetState extends State<ProgramPageWidget> {
             ),
           ),
           Expanded(
-              child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ListView(
-              children: [
-                for (var option in widget.device.selectedProgram.options)
-                  OptionsWidget(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: ListView(
+                children: [
+                  for (var option in widget.device.selectedProgram.options)
+                    OptionsWidget(
                       option: option,
                       device: widget.device,
-                      onUpdate: (value) {
+                      onUpdate: (ProgramOptions value) {
                         setState(() {
                           options[option.key] = value;
                         });
-                      })
-              ],
+                      },
+                    )
+                ],
+              ),
             ),
-          )),
+          ),
         ],
       ),
     );
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   widget.api.eventEmitter.addListener((ev, context) {
-  //     ScaffoldMessenger.of(this.context).showSnackBar(
-  //       SnackBar(
-  //         content: Text("Event occurred! ${ev.eventData}"),
-  //       ),
-  //     );
-  //   });
-  // }
 }
 
 class OptionsWidget extends StatefulWidget {
+  const OptionsWidget({super.key, required this.option, required this.device, required this.onUpdate});
   final ProgramOptions option;
   final HomeDevice device;
   final Function onUpdate;
-  const OptionsWidget({Key? key, required this.option, required this.device, required this.onUpdate}) : super(key: key);
 
   @override
   State<OptionsWidget> createState() => _OptionsWidgetState();
@@ -99,7 +88,7 @@ class _OptionsWidgetState extends State<OptionsWidget> {
       children: [
         Text(widget.option.key),
         Slider(
-          value: currentSliderValue ??= widget.option.value.toDouble(),
+          value: currentSliderValue ??= 100,
           min: widget.option.constraints!.min.toDouble(),
           max: widget.option.constraints!.max.toDouble(),
           divisions: (widget.option.constraints!.max.toInt() - widget.option.constraints!.min.toInt()) ~/
