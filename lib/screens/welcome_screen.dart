@@ -14,7 +14,7 @@ class WelcomeScreen extends ConsumerWidget {
     final homeconnectApi = ref.watch(authProvider);
     final hcoAuth = HomeConnectOauth(
       context: context,
-      scopes: [OauthScope.identifyAppliance, OauthScope.oven, OauthScope.ovenControl, OauthScope.ovenSettings],
+      scopes: [OauthScope.identifyAppliance, OauthScope.oven],
     );
     final authenticated = ref.watch(authentiacationStateProvider);
 

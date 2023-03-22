@@ -3,20 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homeconnect/homeconnect.dart';
 
 class Dish {
+  Dish({
+    required this.name,
+    required this.image,
+    required this.duration,
+    required this.temperature,
+    required this.programKey,
+    required this.description,
+  });
   final String name;
   final String image;
   final int duration;
   final int temperature;
   final String programKey;
   final String description;
-
-  Dish(
-      {required this.name,
-      required this.image,
-      required this.duration,
-      required this.temperature,
-      required this.programKey,
-      required this.description});
 }
 
 final dishesProvider = Provider((ref) {
@@ -40,13 +40,14 @@ final dishesProvider = Provider((ref) {
           'Bread is a staple food prepared from a dough of flour and water, usually by baking. Throughout recorded history it has been popular around the world and is one of the oldest artificial foods, having been of importance since the dawn of agriculture. Bread may be leavened by processes such as reliance on naturally occurring sourdough microbes, chemicals, industrially produced yeast, or high-pressure aeration. Some bread is cooked before it can leaven, including for traditional or religious reasons. Non-cereal ingredients such as fruits, nuts, and fats may be included. Commercial bread commonly contains additives to improve flavor, texture, color, shelf life, or ease of manufacturing. Bread is served in various forms with any meal. It is eaten as a snack by itself, dipped in various savory dishes, or used for sandwiches and to make toast. It is one of the most common and convenient prepared foods in the world.',
     ),
     Dish(
-        name: 'Cake',
-        image: 'images/cake.jpeg',
-        duration: 60,
-        temperature: 150,
-        programKey: 'Cooking.Oven.Program.HeatingMode.TopBottomHeating',
-        description:
-            'Cake is a form of sweet dessert that is typically baked. In its oldest forms, cakes were modifications of breads, but cakes now cover a wide range of preparations that can be simple or elaborate, and that share features with other desserts such as pastries, meringues, custards, and pies. The most commonly used cake ingredients include flour, sugar, eggs, butter or oil or margarine, a liquid, and leavening agents, such as baking soda or baking powder. Common additional ingredients and flavourings include dried, candied, or fresh fruit, nuts, cocoa, and extracts such as vanilla, with numerous substitutions for the primary ingredients. Cakes can also be filled with fruit preserves, nuts or dessert sauces (like pastry cream), iced with buttercream or other icings, and decorated with marzipan, piped borders, or candied fruit.'),
+      name: 'Cake',
+      image: 'images/cake.jpeg',
+      duration: 60,
+      temperature: 150,
+      programKey: 'Cooking.Oven.Program.HeatingMode.TopBottomHeating',
+      description:
+          'Cake is a form of sweet dessert that is typically baked. In its oldest forms, cakes were modifications of breads, but cakes now cover a wide range of preparations that can be simple or elaborate, and that share features with other desserts such as pastries, meringues, custards, and pies. The most commonly used cake ingredients include flour, sugar, eggs, butter or oil or margarine, a liquid, and leavening agents, such as baking soda or baking powder. Common additional ingredients and flavourings include dried, candied, or fresh fruit, nuts, cocoa, and extracts such as vanilla, with numerous substitutions for the primary ingredients. Cakes can also be filled with fruit preserves, nuts or dessert sauces (like pastry cream), iced with buttercream or other icings, and decorated with marzipan, piped borders, or candied fruit.',
+    ),
     Dish(
       name: 'Roast',
       image: 'images/roast.jpeg',
@@ -130,13 +131,14 @@ final authentiacationStateProvider = StateProvider<bool>((ref) {
 /// )
 /// ```
 final authProvider = FutureProvider<HomeConnectApi>((ref) async {
-  await dotenv.load(fileName: ".env");
+  await dotenv.load();
   final env = dotenv.env;
   final homeConnectApi = HomeConnectApi(
-    Uri.parse(env["HOMECONNECT_URL"]!),
+    Uri.parse(env['HOMECONNECT_URL']!),
     credentials: HomeConnectClientCredentials(
       clientId: env['HOMECONNECT_CLIENT_ID']!,
       redirectUri: env['HOMECONNECT_REDIRECT_URL']!,
+      clientSecret: env['HOMECONNECT_CLIENT_SECRET']!,
     ),
   );
 
@@ -153,10 +155,10 @@ class ApiNotifier extends StateNotifier<HomeConnectApi> {
   ApiNotifier()
       : super(
           HomeConnectApi(
-            Uri.parse(""),
+            Uri.parse(''),
             credentials: HomeConnectClientCredentials(
-              clientId: "",
-              redirectUri: "",
+              clientId: '',
+              redirectUri: '',
             ),
           ),
         );
@@ -224,12 +226,11 @@ class ApiNotifier2 extends StateNotifier<ApiState> {
 }
 
 class ApiState {
+  ApiState(this.api, this.authenticated, this.device);
   final HomeConnectApi? api;
   final bool authenticated;
   final List<HomeDevice> devices = [];
   final HomeDevice? device;
-
-  ApiState(this.api, this.authenticated, this.device);
 
   ApiState copyWith({
     HomeConnectApi? api,
